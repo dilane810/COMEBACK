@@ -1,0 +1,399 @@
+
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>COME BACK!</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, sans-serif; }
+    body { background-color: #0d0d0d; color: #ffffff; min-height: 100vh; padding-bottom: 20px; display: flex; flex-direction: column; align-items: center; }
+
+    /* Topo do Aplicativo */
+    .app-header { width: 100%; max-width: 480px; padding: 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #262626; margin-bottom: 10px; }
+    .logo-title { font-size: 26px; font-weight: 900; letter-spacing: 2px; color: #ffffff; }
+    .header-icons { display: flex; gap: 8px; }
+    .icon-btn { width: 36px; height: 36px; background: #1f1f23; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #fff; cursor: pointer; border: 1px solid #27272a; }
+
+    .container { width: 100%; max-width: 480px; padding: 0 10px; }
+    .card { background: #171717; border: 1px solid #262626; border-radius: 16px; padding: 15px; margin-bottom: 12px; }
+
+    /* Caixa "Em que estás a pensar?" */
+    .quick-post-box { display: flex; align-items: center; gap: 10px; background: #171717; padding: 12px; border-radius: 14px; border: 1px solid #262626; margin-bottom: 12px; }
+    .user-avatar { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 1px solid #38bdf8; }
+    .post-input-btn { flex: 1; background: #0d0d0d; border-radius: 20px; padding: 10px 14px; color: #71717a; font-size: 13px; cursor: pointer; border: 1px solid #27272a; text-align: left; }
+
+    /* Carrossel de Histórias */
+    .stories-container { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 12px; scrollbar-width: none; }
+    .stories-container::-webkit-scrollbar { display: none; }
+    .no-stories-msg { font-size: 12px; color: #71717a; padding: 10px 0; text-align: center; width: 100%; }
+
+    /* Caixa de Código de Convite & Convidados */
+    .invite-box { background: linear-gradient(135deg, #1f1f23 0%, #171717 100%); border: 1px solid #38bdf8; border-radius: 14px; padding: 14px; margin-bottom: 12px; }
+    .invite-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .invite-title { font-size: 13px; font-weight: bold; color: #38bdf8; text-transform: uppercase; letter-spacing: 0.5px; }
+    .code-display-area { display: flex; align-items: center; justify-content: space-between; background: #0d0d0d; padding: 8px 12px; border-radius: 8px; border: 1px dashed #3f3f46; margin-bottom: 10px; }
+    .code-text { font-family: monospace; font-size: 18px; font-weight: bold; color: #22c55e; letter-spacing: 2px; }
+    .btn-copy { background: #38bdf8; color: #000; border: none; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; }
+    .invited-list-title { font-size: 11px; color: #a1a1aa; margin-top: 8px; margin-bottom: 4px; text-transform: uppercase; }
+    .invited-count { font-size: 12px; color: #e4e4e7; font-weight: 600; }
+
+    /* Formulários e Botões */
+    .form-group { margin-bottom: 10px; text-align: left; }
+    label { display: block; font-size: 11px; color: #a1a1aa; margin-bottom: 4px; text-transform: uppercase; }
+    input, select { width: 100%; padding: 10px; background: #0d0d0d; border: 1px solid #3f3f46; border-radius: 8px; color: #fff; font-size: 14px; outline: none; }
+
+    .btn { display: block; width: 100%; padding: 12px; background-color: #ffffff; color: #000000; text-align: center; font-weight: 800; font-size: 13px; text-transform: uppercase; border: none; border-radius: 8px; cursor: pointer; margin-top: 8px; }
+    .btn-buy { background-color: #22c55e; color: #ffffff; }
+
+    /* Menu de 3 Barras */
+    .side-menu { display: none; position: fixed; top: 0; right: 0; width: 260px; height: 100%; background: #171717; border-left: 1px solid #262626; z-index: 100; padding: 20px; box-shadow: -5px 0 15px rgba(0,0,0,0.8); }
+    .side-menu h3 { font-size: 16px; margin-bottom: 20px; color: #38bdf8; border-bottom: 1px solid #262626; padding-bottom: 10px; }
+    .side-menu ul { list-style: none; }
+    .side-menu li { padding: 12px 0; border-bottom: 1px solid #262626; font-size: 14px; color: #d4d4d8; cursor: pointer; }
+    .close-menu { text-align: right; font-size: 18px; color: #ef4444; cursor: pointer; margin-bottom: 10px; }
+
+    /* Feed do Produto */
+    .post-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .post-author { font-weight: bold; font-size: 14px; color: #fff; }
+    .post-meta { font-size: 11px; color: #71717a; }
+    .post-img { width: 100%; border-radius: 10px; margin: 10px 0; max-height: 280px; object-fit: cover; }
+    
+    /* Comentários */
+    .comment-section { background: #0d0d0d; padding: 10px; border-radius: 8px; margin-top: 10px; }
+    .comment-item { font-size: 12px; color: #a1a1aa; margin-bottom: 6px; }
+    .comment-user { color: #38bdf8; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <!-- TOPO COM LOGO E MENU -->
+  <div class="app-header">
+    <h1 class="logo-title">COME BACK!</h1>
+    <div class="header-icons">
+      <button class="icon-btn" onclick="focarPublicacao()">➕</button>
+      <button class="icon-btn" onclick="alert('Pesquisa no Come Back...')">🔍</button>
+      <button class="icon-btn" onclick="toggleMenu()">☰</button>
+    </div>
+  </div>
+
+  <!-- MENU LATERAL (3 BARRAS) -->
+  <div id="sideMenu" class="side-menu">
+    <div class="close-menu" onclick="toggleMenu()">✕ Fechar</div>
+    <h3>Opções da Conta</h3>
+    <ul>
+      <li onclick="alert('Sem notificações no momento.')">🔔 Notificações</li>
+      <li onclick="mudarPalavraPasse()">🔑 Mudar Palavra-Passe</li>
+      <li onclick="verDadosConta()">📄 Dados da Conta</li>
+      <li onclick="atualizarFotoPerfil()">🖼️ Alterar Foto de Perfil</li>
+      <li onclick="sairDaConta()" style="color: #ef4444; font-weight: bold;">🚪 Sair da Conta</li>
+    </ul>
+  </div>
+
+  <div class="container">
+
+    <!-- AUTENTICAÇÃO / LOGIN -->
+    <div id="authArea" class="card">
+      <h2 style="text-align: center; margin-bottom: 15px; font-size: 16px;">Entrar / Registar</h2>
+      
+      <div class="form-group">
+        <label>Tipo de Conta</label>
+        <select id="userType">
+          <option value="comprador">Comprador (Grátis)</option>
+          <option value="nhonguista">Nhonguista (Vendedor)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Nome de Utilizador</label>
+        <input type="text" id="username" placeholder="Teu nome">
+      </div>
+
+      <div class="form-group">
+        <label>Palavra-Passe</label>
+        <input type="password" id="password" placeholder="Sua senha">
+      </div>
+
+      <div class="form-group">
+        <label>Código de Convite (Código do Sistema: <span id="currentInviteDisplay" style="color:#38bdf8;"></span>)</label>
+        <input type="text" id="inviteCodeInput" placeholder="Insere o código de convite">
+      </div>
+
+      <button class="btn" onclick="fazerRegisto()">Aceder à Conta</button>
+    </div>
+
+    <!-- PAINEL PRINCIPAL DA APLICAÇÃO -->
+    <div id="dashboardArea" style="display: none;">
+
+      <!-- CAIXA "EM QUE ESTÁS A PENSAR?" -->
+      <div class="quick-post-box">
+        <img id="myUserAvatar" src="https://via.placeholder.com/50" class="user-avatar" alt="Perfil">
+        <button class="post-input-btn" onclick="focarPublicacao()">Em que estás a pensar?</button>
+        <span style="font-size:20px; cursor:pointer;" onclick="focarPublicacao()">🖼️</span>
+      </div>
+
+      <!-- ÁREA DE CÓDIGO DE CONVITE E CONVIDADOS -->
+      <div class="invite-box">
+        <div class="invite-header">
+          <span class="invite-title">📩 Convidar Amigos</span>
+          <button class="btn-copy" style="background:#262626; color:#a1a1aa; padding:3px 8px; border:1px solid #3f3f46;" onclick="gerarNovoCodigo()">Gerar Novo</button>
+        </div>
+        
+        <div class="code-display-area">
+          <span class="code-text" id="myInviteCodeDisplay">---</span>
+          <button class="btn-copy" onclick="copiarCodigo()">Copiar Código</button>
+        </div>
+
+        <div class="invited-list-title">Pessoas Convidadas por Ti</div>
+        <div class="invited-count" id="invitedCountDisplay">👥 0 pessoas registadas com o teu código</div>
+      </div>
+
+      <!-- CARROSSEL DE HISTÓRIAS (VAZIO ATÉ HAVER REGISTOS) -->
+      <div class="stories-container" id="storiesContainer">
+        <div class="no-stories-msg">Nenhuma história disponível de momento.</div>
+      </div>
+
+      <!-- PUBLICAÇÃO (PARA NHONGUISTAS) -->
+      <div id="nhonguistaPublishArea" class="card" style="display: none;">
+        <h3 style="font-size: 14px; margin-bottom: 10px;">Publicar Artigo / Produto</h3>
+        <div class="form-group">
+          <input type="text" id="postTitle" placeholder="O que estás a vender?">
+        </div>
+        <div class="form-group">
+          <input type="text" id="postPrice" placeholder="Preço (MT)">
+        </div>
+        <div class="form-group">
+          <input type="text" id="postImgUrl" placeholder="URL da foto do produto">
+        </div>
+        <button class="btn btn-buy" onclick="publicarProduto()">Partilhar no Feed</button>
+      </div>
+
+      <!-- FEED DE PRODUTOS -->
+      <div id="feedContainer"></div>
+
+    </div>
+
+  </div>
+
+  <script>
+    var codigoAtual = localStorage.getItem('inviteCode') || "123456";
+    document.getElementById('currentInviteDisplay').innerText = codigoAtual;
+
+    var currentUser = null;
+    var invitedUsers = JSON.parse(localStorage.getItem('invitedUsers')) || [];
+    var posts = JSON.parse(localStorage.getItem('posts')) || [
+      {
+        id: 1,
+        author: "Geek Storm X",
+        role: "Nhonguista VIP",
+        time: "9 h",
+        title: "É dentro! ✅ Casaco Lilás Estilo High-Fashion",
+        price: "2500 MT",
+        img: "https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=600&q=80",
+        comments: [{ user: "Comprador1", text: "Ainda está disponível?" }]
+      }
+    ];
+
+    function toggleMenu() {
+      var menu = document.getElementById('sideMenu');
+      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function fazerRegisto() {
+      var name = document.getElementById('username').value;
+      var pass = document.getElementById('password').value;
+      var codeInput = document.getElementById('inviteCodeInput').value;
+      var type = document.getElementById('userType').value;
+
+      if (!name || !pass || !codeInput) {
+        alert('Por favor, preenche todos os campos!');
+        return;
+      }
+
+      if (codeInput !== codigoAtual) {
+        alert('Código de convite inválido!');
+        return;
+      }
+
+      // Se entrou com o código atual, guarda o registo
+      invitedUsers.push(name);
+      localStorage.setItem('invitedUsers', JSON.stringify(invitedUsers));
+
+      currentUser = { 
+        name: name, 
+        role: type, 
+        pic: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&q=80',
+        myPersonalCode: Math.floor(100000 + Math.random() * 900000).toString()
+      };
+
+      // Atualiza o código do sistema para o próximo
+      codigoAtual = currentUser.myPersonalCode;
+      localStorage.setItem('inviteCode', codigoAtual);
+
+      document.getElementById('myUserAvatar').src = currentUser.pic;
+      document.getElementById('myInviteCodeDisplay').innerText = currentUser.myPersonalCode;
+      
+      atualizarContadorConvites();
+
+      document.getElementById('authArea').style.display = 'none';
+      document.getElementById('dashboardArea').style.display = 'block';
+
+      if (type === 'nhonguista') {
+        document.getElementById('nhonguistaPublishArea').style.display = 'block';
+      }
+
+      renderFeed();
+    }
+
+    function copiarCodigo() {
+      var code = document.getElementById('myInviteCodeDisplay').innerText;
+      navigator.clipboard.writeText(code);
+      alert('Código de convite copiado: ' + code);
+    }
+
+    function gerarNovoCodigo() {
+      var novo = Math.floor(100000 + Math.random() * 900000).toString();
+      currentUser.myPersonalCode = novo;
+      codigoAtual = novo;
+      localStorage.setItem('inviteCode', novo);
+      document.getElementById('myInviteCodeDisplay').innerText = novo;
+      alert('Novo código de convite gerado!');
+    }
+
+    function atualizarContadorConvites() {
+      var total = invitedUsers.length;
+      document.getElementById('invitedCountDisplay').innerText = "👥 " + total + " pessoa(s) registada(s) no sistema";
+    }
+
+    function focarPublicacao() {
+      if (currentUser && currentUser.role === 'nhonguista') {
+        document.getElementById('postTitle').focus();
+      } else {
+        alert("Apenas Nhonguistas podem publicar produtos!");
+      }
+    }
+
+    function publicarProduto() {
+      var title = document.getElementById('postTitle').value;
+      var price = document.getElementById('postPrice').value;
+      var img = document.getElementById('postImgUrl').value || "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=600&q=80";
+
+      if (!title || !price) {
+        alert('Preenche o título e o preço!');
+        return;
+      }
+
+      var newPost = {
+        id: Date.now(),
+        author: currentUser.name,
+        role: "Nhonguista",
+        time: "Agora mesmo",
+        title: title,
+        price: price,
+        img: img,
+        comments: []
+      };
+
+      posts.unshift(newPost);
+      localStorage.setItem('posts', JSON.stringify(posts));
+      renderFeed();
+
+      document.getElementById('postTitle').value = '';
+      document.getElementById('postPrice').value = '';
+      document.getElementById('postImgUrl').value = '';
+    }
+
+    function adicionarComentario(postId) {
+      var commentInput = document.getElementById('commentInput_' + postId);
+      var text = commentInput.value;
+      if (!text) return;
+
+      posts.forEach(function(p) {
+        if (p.id === postId) {
+          p.comments.push({ user: currentUser.name, text: text });
+        }
+      });
+
+      localStorage.setItem('posts', JSON.stringify(posts));
+      renderFeed();
+    }
+
+    function efetuarPagamento(item, valor) {
+      var metodo = prompt("Escolhe o método de pagamento:\n1. M-Pesa\n2. e-Mola");
+      if (metodo === "1" || metodo === "2") {
+        var num = prompt("Introduz o teu número para transferência (" + item + " - " + valor + "):");
+        if (num) {
+          alert("Pedido enviado! Transfira para confirmar via " + (metodo === "1" ? "M-Pesa" : "e-Mola"));
+        }
+      }
+    }
+
+    function renderFeed() {
+      var container = document.getElementById('feedContainer');
+      container.innerHTML = '';
+
+      posts.forEach(function(post) {
+        var postCard = document.createElement('div');
+        postCard.className = 'card';
+
+        var html = `
+          <div class="post-header">
+            <div>
+              <div class="post-author">${post.author} <span style="color:#38bdf8; font-size:12px;">• Seguir</span></div>
+              <div class="post-meta">${post.time} • 🌐</div>
+            </div>
+            <div style="color:#71717a; font-weight:bold; cursor:pointer;">•••</div>
+          </div>
+          <div style="font-size:14px; color:#e4e4e7; margin-bottom:8px;">
+            ${post.title}<br>
+            <strong style="color:#22c55e;">Preço: ${post.price}</strong>
+          </div>
+          <img src="${post.img}" class="post-img">
+          
+          <button class="btn btn-buy" style="margin-bottom:10px;" onclick="efetuarPagamento('${post.title}', '${post.price}')">Comprar via M-Pesa / e-Mola</button>
+
+          <div class="comment-section">
+            <div style="font-size:11px; color:#71717a; margin-bottom:5px;">Comentários:</div>
+        `;
+
+        post.comments.forEach(function(c) {
+          html += `<div class="comment-item"><span class="comment-user">${c.user}:</span> ${c.text}</div>`;
+        });
+
+        html += `
+            <div style="display:flex; gap:5px; margin-top:8px;">
+              <input type="text" id="commentInput_${post.id}" placeholder="Escrever comentário..." style="font-size:12px; padding:6px;">
+              <button class="btn" style="width:auto; padding:6px 12px; margin:0;" onclick="adicionarComentario(${post.id})">Enviar</button>
+            </div>
+          </div>
+        `;
+
+        postCard.innerHTML = html;
+        container.appendChild(postCard);
+      });
+    }
+
+    function mudarPalavraPasse() {
+      var nova = prompt("Digita a tua nova palavra-passe:");
+      if (nova) alert("Palavra-passe alterada!");
+    }
+
+    function verDadosConta() {
+      alert("Nome: " + currentUser.name + "\nTipo: " + currentUser.role + "\nTeu Código: " + currentUser.myPersonalCode);
+    }
+
+    function atualizarFotoPerfil() {
+      var url = prompt("Introduz o URL da tua foto:");
+      if (url) {
+        document.getElementById('myUserAvatar').src = url;
+        alert("Foto atualizada!");
+      }
+    }
+
+    function sairDaConta() {
+      location.reload();
+    }
+  </script>
+
+</body>
+</html>
